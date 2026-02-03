@@ -1,0 +1,33 @@
+name: Samed Panel APK Builder
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # Manuel olarak da başlatabilmen için
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Projeyi Kopyala
+        uses: actions/checkout@v4
+
+      - name: Java 17 Kurulumu
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Gradle'ı Yetkilendir
+        run: chmod +x gradlew
+
+      - name: APK Derle (Debug)
+        run: ./gradlew assembleDebug
+
+      - name: APK Dosyasını Kaydet
+        uses: actions/upload-artifact@v4
+        with:
+          name: samed-panel-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
